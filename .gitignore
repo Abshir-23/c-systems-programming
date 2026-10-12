@@ -1,0 +1,11 @@
+# build output
+obj/*.o
+01-number-classifier/task2
+02-grading-system/task3
+03-threaded-prime-decryption/task4
+04-smtp-server/task5
+05-tcp-file-receiver/task6
+01-number-classifier/output.bin
+04-smtp-server/*.eml
+03-threaded-prime-decryption/task4_plain.txt
+03-threaded-prime-decryption/task4_plain.hash
