@@ -1,31 +1,31 @@
-# 05 TCP file receiver
+# 05 TCP-filmottaker
 
-A TCP client that downloads a bitmap image sent as several packets, out of order, with a custom header. It acknowledges each packet, puts them back in the right order by sequence number and writes the complete file to disk.
+En TCP-klient som laster ned et bitmap-bilde som sendes i flere pakker, i feil rekkefølge, med en egen header. Den kvitterer for hver pakke, setter dem i riktig rekkefølge etter sekvensnummer og skriver hele filen til disk.
 
-## How it works
+## Slik fungerer det
 
-1. Connect to the server given with `-server` and `-port`
-2. Read the fixed header first, then allocate and read exactly the payload size
-3. Send an ACK (or NACK) back for every packet
-4. Stop when a packet with the FIN flag arrives
-5. Sort the packets by sequence number and write `task6_received.bmp`
+1. Koble til serveren som oppgis med `-server` og `-port`
+2. Les den faste headeren først, og alloker og les deretter nøyaktig så mye innhold som oppgitt
+3. Send ACK (eller NACK) tilbake for hver pakke
+4. Stopp når en pakke med FIN-flagget kommer
+5. Sorter pakkene etter sekvensnummer og skriv `task6_received.bmp`
 
-![Received image](docs/received.png)
+![Mottatt bilde](docs/received.png)
 
-## Usage
+## Bruk
 
 ```bash
 make
 ./task6 -server 127.0.0.1 -port 42009
 ```
 
-## What I practised
+## Hva jeg øvde på
 
-* A reliable `recvAll` loop, since TCP can split data across several `recv` calls
-* Building TCP style headers with sequence numbers, flags and checksums
-* Reassembling out of order data
+* En pålitelig `recvAll`-løkke, siden TCP kan dele data over flere `recv`-kall
+* Å bygge headere i TCP-stil med sekvensnumre, flagg og sjekksummer
+* Å sette sammen data som kommer i feil rekkefølge
 
-## Screenshots
+## Skjermbilder
 
-![Session](docs/task6_scrnshot.png)
+![Sesjon](docs/task6_scrnshot.png)
 ![Valgrind](docs/task6_valgrind.png)

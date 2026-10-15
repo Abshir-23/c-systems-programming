@@ -1,5 +1,5 @@
 /* 
-   Helper functions used by the server */
+   Hjelpefunksjoner som brukes av serveren */
 
 #include <stdio.h>
 #include <string.h>
@@ -7,8 +7,8 @@
 #include <sys/socket.h>
 #include "include/task5.h"
 
-/* returns 1 if filename is safe to use, 0 if not.
-   blocks path traversal like ../../etc/passwd */
+/* returnerer 1 hvis filnavnet er trygt å bruke, 0 hvis ikke.
+   stopper path traversal som ../../etc/passwd */
 int isValidFilename(const char *pszName)
 {
     int i    = 0;
@@ -29,7 +29,7 @@ int isValidFilename(const char *pszName)
     return 1;
 }
 
-/* recv() may return less than asked — loop until we have all iLen bytes */
+/* recv() kan returnere mindre enn det som ble bedt om, så vi går i løkke til vi har alle iLen byte */
 int recvAll(int iSock, char *pBuf, int iLen)
 {
     int iTotal = 0;

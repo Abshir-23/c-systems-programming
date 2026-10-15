@@ -1,5 +1,5 @@
 /*
-   EWP protocol handling: send replies, receive files, handle client commands */
+   Håndtering av EWP-protokollen: sende svar, ta imot filer og håndtere klientkommandoer */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +9,7 @@
 #include <sys/socket.h>
 #include "include/task5.h"
 
-/* writes magic number, packet size and delimiter into the EWP header */
+/* skriver magisk tall, pakkestørrelse og skilletegn inn i EWP-headeren */
 void fillHeader(struct EWP_SMTP_PROTOCOL_SIZEHEADER *pHdr, int iTotal)
 {
     char szSize[5] = {0};
@@ -19,7 +19,7 @@ void fillHeader(struct EWP_SMTP_PROTOCOL_SIZEHEADER *pHdr, int iTotal)
     pHdr->acDelimeter[0] = '|';
 }
 
-/* sends a standard status reply to the client, e.g. "250 Sender ok" */
+/* sender et standard statussvar til klienten, f.eks. "250 Sender ok" */
 void sendReply(int iSock, const char *pszCode, const char *pszMsg)
 {
     struct EWP_SMTP_PROTOCOL_SERVERREPLY stReply;
@@ -34,8 +34,8 @@ void sendReply(int iSock, const char *pszCode, const char *pszMsg)
     printf("[->] %s %s\n", pszCode, pszMsg);
 }
 
-/* reads incoming data packets and writes to file.
-   stops when a lone dot is received (SMTP end-of-message marker) */
+/* leser innkommende datapakker og skriver til fil.
+   stopper når et punktum alene mottas (SMTP-markør for slutt på melding) */
 void recvFileData(int iSock, FILE *pfOut)
 {
     struct EWP_SMTP_PROTOCOL_SIZEHEADER stHead;
@@ -59,7 +59,7 @@ void recvFileData(int iSock, FILE *pfOut)
         memset(szPayload, 0, sizeof(szPayload));
         if (recvAll(iSock, szPayload, iPayload) < 0) return;
 
-        /* lone dot = end of file, stop reading */
+        /* punktum alene = slutt på filen, slutt å lese */
         if ((iPayload == 1 && szPayload[0] == '.') ||
             (iPayload == 2 && szPayload[0] == '.' && szPayload[1] == '\n') ||
             (iPayload == 3 && szPayload[0] == '.' &&
@@ -70,8 +70,8 @@ void recvFileData(int iSock, FILE *pfOut)
     }
 }
 
-/* handles one connected client through the full SMTP-like session.
-   processes HELO, MAIL, RCPT, DATA and QUIT commands */
+/* håndterer én tilkoblet klient gjennom hele den SMTP-lignende sesjonen.
+   behandler kommandoene HELO, MAIL, RCPT, DATA og QUIT */
 void handleClient(int iClientSock,
                   const char *pszClientIp,
                   const char *pszServerId)
@@ -83,13 +83,13 @@ void handleClient(int iClientSock,
     char      szFilename[64];
     char      szTimestamp[32];
     FILE     *pfOutput   = NULL;
-    time_t    lNow       = 0;   /* time_t is long under the hood */
+    time_t    lNow       = 0;   /* time_t er en long under panseret */
     int       iTotalSize = 0;
     int       iPayload   = 0;
     int       bRunning   = 1;
     struct tm *pTm       = NULL;
 
-    /* send 220 welcome as soon as client connects */
+    /* send 220-velkomst så snart klienten kobler til */
     memset(&stAccept, 0, sizeof(stAccept));
     fillHeader(&stAccept.stHead, (int)sizeof(stAccept));
     memcpy(stAccept.acStatusCode, "220", 3);
@@ -102,14 +102,14 @@ void handleClient(int iClientSock,
              "127.0.0.1 SMTP %.10s %.18s", pszServerId, szTimestamp);
     stAccept.acHardZero[0] = '\0';
     send(iClientSock, &stAccept, sizeof(stAccept), 0);
-    printf("[->] 220 server accept sent\n");
+    printf("[->] 220 aksept fra server sendt\n");
 
     while (bRunning) {
 
-        /* read the 8-byte EWP header first */
+        /* les den 8 byte lange EWP-headeren først */
         memset(&stHead, 0, sizeof(stHead));
         if (recvAll(iClientSock, (char *)&stHead, HEADER_SIZE) < 0) {
-            printf("[  ] Client disconnected.\n");
+            printf("[  ] Klienten koblet fra.\n");
             break;
         }
 
@@ -121,14 +121,14 @@ void handleClient(int iClientSock,
 
         iPayload = iTotalSize - HEADER_SIZE;
         if (iPayload <= 0 || iPayload >= 2048) {
-            printf("[  ] Bad packet size: %d\n", iPayload);
+            printf("[  ] Ugyldig pakkestørrelse: %d\n", iPayload);
             break;
         }
 
-        /* read the payload after the header */
+        /* les innholdet etter headeren */
         memset(szPayload, 0, sizeof(szPayload));
         if (recvAll(iClientSock, szPayload, iPayload) < 0) {
-            printf("[  ] Read failed.\n");
+            printf("[  ] Lesing feilet.\n");
             break;
         }
 
@@ -144,7 +144,7 @@ void handleClient(int iClientSock,
                      "%s Hello client", pszClientIp);
             stHelo.acHardZero[0] = '\0';
             send(iClientSock, &stHelo, sizeof(stHelo), 0);
-            printf("[->] 250 HELO reply\n");
+            printf("[->] 250 HELO-svar\n");
 
         } else if (strncmp(szPayload, "MAIL", 4) == 0) {
 
@@ -158,23 +158,23 @@ void handleClient(int iClientSock,
 
         } else if (strncmp(szPayload, "DATA", 4) == 0) {
 
-            /* extract filename from "DATA <filename>" payload */
+            /* hent ut filnavnet fra innholdet "DATA <filnavn>" */
             memset(szFilename, 0, sizeof(szFilename));
             if (iPayload > 5) {
                 int iLen = 0;
                 strncpy(szFilename, szPayload + 5, sizeof(szFilename) - 1);
                 szFilename[sizeof(szFilename) - 1] = '\0';
                 iLen = (int)strlen(szFilename);
-                /* strip trailing spaces and newlines */
+                /* fjern mellomrom og linjeskift på slutten */
                 while (iLen > 0 &&
                        (szFilename[iLen-1] == ' '  ||
                         szFilename[iLen-1] == '\r' ||
                         szFilename[iLen-1] == '\n'))
                     szFilename[--iLen] = '\0';
             }
-            printf("[<-] DATA filename='%s'\n", szFilename);
+            printf("[<-] DATA filnavn='%s'\n", szFilename);
 
-            /* reject bad filenames before opening anything */
+            /* avvis ugyldige filnavn før noe åpnes */
             if (!isValidFilename(szFilename)) {
                 sendReply(iClientSock, "501", "Invalid filename");
             } else {
@@ -186,7 +186,7 @@ void handleClient(int iClientSock,
                     recvFileData(iClientSock, pfOutput);
                     fclose(pfOutput);
                     pfOutput = NULL;
-                    printf("[  ] Saved: '%s'\n", szFilename);
+                    printf("[  ] Lagret: '%s'\n", szFilename);
                     sendReply(iClientSock, "250", "Message accepted");
                 }
             }
@@ -200,7 +200,7 @@ void handleClient(int iClientSock,
         }
     }
 
-    /* close file if loop exited unexpectedly mid-transfer */
+    /* lukk filen hvis løkken avsluttet uventet midt i overføringen */
     if (pfOutput != NULL) {
         fclose(pfOutput);
         pfOutput = NULL;

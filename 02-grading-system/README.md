@@ -1,30 +1,30 @@
-# 02 Grading system
+# 02 Karaktersystem
 
-A menu-driven command line app for registering students, grading tasks and calculating letter grades (A to F). Students are stored in a singly linked list on the heap.
+Et menystyrt kommandolinjeprogram for å registrere studenter, vurdere oppgaver og regne ut bokstavkarakterer (A til F). Studentene lagres i en enkeltlenket liste på heapen.
 
-## Features
+## Funksjoner
 
-* Add students manually or load a list from a text file
-* Grade individual tasks with a written justification
-* Print all students, filter by grade or list students with ungraded tasks
-* Statistics (count, average, highest and lowest score)
-* Delete students
-* Save and load the full list to and from a binary file
+* Legge til studenter manuelt eller laste inn en liste fra en tekstfil
+* Vurdere enkeltoppgaver med skriftlig begrunnelse
+* Skrive ut alle studenter, filtrere på karakter eller vise studenter med oppgaver som ikke er vurdert
+* Statistikk (antall, snitt, høyeste og laveste poengsum)
+* Slette studenter
+* Lagre og laste inn hele listen til og fra en binærfil
 
-## Usage
+## Bruk
 
 ```bash
 make
 ./task3
 ```
 
-## What I practised
+## Hva jeg øvde på
 
-* Linked list insert, search and delete with correct `free()` of every node
-* Safe input handling with `fgets` instead of `scanf`
-* Binary serialisation of structs
+* Innsetting, søk og sletting i lenket liste, med riktig `free()` av hver node
+* Trygg håndtering av input med `fgets` i stedet for `scanf`
+* Binær serialisering av structs
 
-## Screenshots
+## Skjermbilder
 
-![Menu](docs/task3_scrn1.png)
+![Meny](docs/task3_scrn1.png)
 ![Valgrind](docs/task3_valgrind.png)

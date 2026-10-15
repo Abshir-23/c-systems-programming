@@ -4,7 +4,7 @@
 #include <string.h>
 #include "task3.h"
 
-/* Recalculates the total score by adding up points from all tasks */
+/* Regner ut total poengsum på nytt ved å legge sammen poengene fra alle oppgavene */
 void recalc(NODE *pN)
 {
     int iIdx = 0;
@@ -14,14 +14,14 @@ void recalc(NODE *pN)
         pN->iTotalScore += pN->aiPoints[iIdx];
 }
 
-/* Allocates a new node, zeroes it out and sets the candidate ID */
+/* Allokerer en ny node, nullstiller den og setter kandidat-ID */
 NODE *create_node(const char *szId)
 {
     NODE *pNew = NULL;
 
     pNew = (NODE *)malloc(sizeof(NODE));
     if (pNew == NULL) {
-        printf("ERROR: malloc failed\n");
+        printf("FEIL: malloc feilet\n");
         return NULL;
     }
     memset(pNew, 0, sizeof(NODE));
@@ -31,7 +31,7 @@ NODE *create_node(const char *szId)
     return pNew;
 }
 
-/* Adds a new candidate to the end of the list */
+/* Legger til en ny kandidat sist i listen */
 NODE *add_node(NODE **ppHead, const char *szId)
 {
     NODE *pNew    = NULL;
@@ -40,13 +40,13 @@ NODE *add_node(NODE **ppHead, const char *szId)
     pNew = create_node(szId);
     if (pNew == NULL) return NULL;
 
-    /* if the list is empty, the new node becomes the head */
+    /* hvis listen er tom, blir den nye noden hodet */
     if (*ppHead == NULL) {
         *ppHead = pNew;
         return pNew;
     }
 
-    /* walk to the last node and attach the new one after it */
+    /* gå til siste node og fest den nye etter den */
     pCursor = *ppHead;
     while (pCursor->pNext != NULL)
         pCursor = pCursor->pNext;
@@ -56,7 +56,7 @@ NODE *add_node(NODE **ppHead, const char *szId)
     return pNew;
 }
 
-/* Searches the list for a candidate by ID, returns NULL if not found */
+/* Søker etter en kandidat med ID i listen, returnerer NULL hvis den ikke finnes */
 NODE *find_node(NODE *pHead, const char *szId)
 {
     NODE *pCursor = pHead;
@@ -69,39 +69,39 @@ NODE *find_node(NODE *pHead, const char *szId)
     return NULL;
 }
 
-/* Removes and frees a single node, re-links its neighbours */
+/* Fjerner og frigjør én node, og kobler naboene sammen igjen */
 void delete_node(NODE **ppHead, const char *szId)
 {
     NODE *pTarget = NULL;
 
     pTarget = find_node(*ppHead, szId);
     if (pTarget == NULL) {
-        printf("Candidate not found\n");
+        printf("Fant ikke kandidaten\n");
         return;
     }
 
-    /* connect the previous node to the next, skipping the target */
+    /* koble forrige node til neste, og hopp over den som skal slettes */
     if (pTarget->pPrev != NULL)
         pTarget->pPrev->pNext = pTarget->pNext;
     else
-        *ppHead = pTarget->pNext;   /* target was the head node */
+        *ppHead = pTarget->pNext;   /* noden som skal slettes var hodet */
 
     if (pTarget->pNext != NULL)
         pTarget->pNext->pPrev = pTarget->pPrev;
 
     free(pTarget);
     pTarget = NULL;
-    printf("Candidate deleted\n");
+    printf("Kandidaten er slettet\n");
 }
 
-/* Walks the entire list and frees every node one by one */
+/* Går gjennom hele listen og frigjør hver node en etter en */
 void free_list(NODE **ppHead)
 {
     NODE *pCursor = *ppHead;
     NODE *pNext   = NULL;
 
     while (pCursor != NULL) {
-        pNext = pCursor->pNext;  /* save next pointer before freeing */
+        pNext = pCursor->pNext;  /* lagre neste-pekeren før frigjøring */
         free(pCursor);
         pCursor = pNext;
     }

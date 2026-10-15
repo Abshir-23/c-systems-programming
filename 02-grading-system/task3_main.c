@@ -1,6 +1,6 @@
 /* 
-   Entry point for the program. Contains the menu, grade calculation
-   and small utility functions used throughout the code.
+   Startpunktet for programmet. Inneholder menyen, utregning av karakter
+   og små hjelpefunksjoner som brukes i hele koden.
 */
 
 #include <stdio.h>
@@ -8,17 +8,17 @@
 #include <string.h>
 #include "task3.h"
 
-/* Maximum points per task  */
+/* Maks poeng per oppgave  */
 int aiTaskMax[NUM_TASKS] = {5, 15, 20, 20, 20, 20};
 
-/* Waits for the user to press ENTER before returning to the menu */
+/* Venter til brukeren trykker ENTER før den går tilbake til menyen */
 void pause_menu(void)
 {
-    printf("\n--- Press ENTER to continue ---");
+    printf("\n--- Trykk ENTER for å fortsette ---");
     while (getchar() != '\n');
 }
 
-/* Safely reads a line from keyboard using fgets, strips newline */
+/* Leser en linje fra tastaturet trygt med fgets, og fjerner linjeskift */
 int read_line(char *szBuf, int iSize)
 {
     if (fgets(szBuf, iSize, stdin) == NULL) return 0;
@@ -26,7 +26,7 @@ int read_line(char *szBuf, int iSize)
     return 1;
 }
 
-/* Converts total score to letter grade using the A to F grading scale */
+/* Gjør om total poengsum til bokstavkarakter etter karakterskalaen A til F */
 const char *get_grade(int iScore)
 {
     if (iScore >= 89) return "A";
@@ -37,29 +37,29 @@ const char *get_grade(int iScore)
     return "F";
 }
 
-/* Prints the main menu to the screen */
+/* Skriver ut hovedmenyen på skjermen */
 static void print_menu(void)
 {
     printf("\n+------------------------------+\n");
-    printf("|     Grading System      |\n");
+    printf("|     Karaktersystem      |\n");
     printf("+------------------------------+\n");
-    printf("|  1. Add candidate            |\n");
-    printf("|  2. Load from text file      |\n");
-    printf("|  3. Grade a task             |\n");
-    printf("|  4. Print all candidates     |\n");
-    printf("|  5. Print by grade           |\n");
-    printf("|  6. Print ungraded           |\n");
-    printf("|  7. Print details            |\n");
-    printf("|  8. Delete candidate         |\n");
-    printf("|  9. Statistics               |\n");
-    printf("| 10. Save to binary file      |\n");
-    printf("| 11. Load from binary file    |\n");
-    printf("|  0. Exit                     |\n");
+    printf("|  1. Legg til kandidat        |\n");
+    printf("|  2. Last inn fra tekstfil    |\n");
+    printf("|  3. Vurder en oppgave        |\n");
+    printf("|  4. Skriv ut alle kandidater |\n");
+    printf("|  5. Skriv ut etter karakter  |\n");
+    printf("|  6. Skriv ut ikke vurderte   |\n");
+    printf("|  7. Skriv ut detaljer        |\n");
+    printf("|  8. Slett kandidat           |\n");
+    printf("|  9. Statistikk               |\n");
+    printf("| 10. Lagre i binærfil         |\n");
+    printf("| 11. Last inn fra binærfil    |\n");
+    printf("|  0. Avslutt                  |\n");
     printf("+------------------------------+\n");
-    printf("Choice: ");
+    printf("Valg: ");
 }
 
-/* Reads the user's menu choice and returns it as an enum value */
+/* Leser brukerens menyvalg og returnerer det som en enum-verdi */
 static enum MENU get_choice(void)
 {
     char szBuf[8];
@@ -89,11 +89,11 @@ int main(void)
             case MENU_SAVE_BIN: fn_save_binary(pHead);  break;
             case MENU_LOAD_BIN: fn_load_binary(&pHead); break;
             case MENU_EXIT:
-                free_list(&pHead);  /* free all memory before exit */
+                free_list(&pHead);  /* frigjør alt minne før avslutning */
                 printf("Goodbye!\n");
                 break;
             default:
-                printf("Invalid choice\n");
+                printf("Ugyldig valg\n");
                 break;
         }
     } while (eChoice != MENU_EXIT);

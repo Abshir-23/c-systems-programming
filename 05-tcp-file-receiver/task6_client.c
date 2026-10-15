@@ -1,5 +1,5 @@
 /*
-   Client communication: sends ACK or NACK back to server */
+   Kommunikasjon fra klienten: sender ACK eller NACK tilbake til serveren */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 #include "include/task6.h"
 
-/* send an ACK or NACK back to the server */
+/* send ACK eller NACK tilbake til serveren */
 void sendAck(int iSock, unsigned int uiSeq, int bNack)
 {
     struct EWP_TCP_PROTOCOL_TCP *pPkt    = NULL;
@@ -24,7 +24,7 @@ void sendAck(int iSock, unsigned int uiSeq, int bNack)
     pPkt->ucDataOffset   = 5;
     pPkt->ucFlags        = bNack ? FLAG_NACK : FLAG_ACK;
     pPkt->usSizeOfPacket = 0;
-    pPkt->usChecksum     = 0;  /* checksum not used in ACK response */
+    pPkt->usChecksum     = 0;  /* sjekksum brukes ikke i ACK-svaret */
 
     send(iSock, pucBuf, HDR_SIZE, 0);
 

@@ -1,4 +1,4 @@
-/* Based on a provided starter file. Fixed and extended by me: mutex synchronisation, explicit initialisation, safer file handling and comments. */
+/* Basert på en utlevert startfil. Rettet og utvidet av meg: synkronisering med mutex, eksplisitt initialisering, tryggere filhåndtering og kommentarer. */
 
 #include <pthread.h>
 #include <stdio.h>
@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include "task4_prime.h"
 
-/* forward declarations - avoids including .c files directly */
+/* forhåndsdeklarasjoner - unngår å inkludere .c-filer direkte */
 void tean(unsigned int *const v, unsigned int *const w,
           const unsigned int *const k, int N);
 unsigned int tcp_checksum(const unsigned char *data, size_t length);
@@ -17,15 +17,15 @@ typedef struct PGPRIMENUMBER {
    struct PGPRIMENUMBER* pNext;
 } PGPRIMENUMBER;
 
-/* all shared resources are passed via this struct instead of globals */
+/* alle delte ressurser sendes via denne structen i stedet for globale variabler */
 struct THREAD_ARGS {
-   FILE*                  pfInputFile;   /* pf = pointer to FILE */
+   FILE*                  pfInputFile;   /* pf = peker til FILE */
    struct PGPRIMENUMBER** pPrimeList;
    pthread_mutex_t*       pMutex;
    int*                   pFound;
 };
 
-/* try each prime as a decryption key, save the file if it works */
+/* prøv hvert primtall som dekrypteringsnøkkel, og lagre filen hvis det virker */
 int tryDecrypt(unsigned int uiPrime) {
    FILE*          pCode   = NULL;
    FILE*          pPlain  = NULL;
@@ -68,7 +68,7 @@ int tryDecrypt(unsigned int uiPrime) {
 
    aKey[0] = aKey[1] = aKey[2] = aKey[3] = uiPrime;
 
-   /* decrypt 8 bytes at a time, N=-32 for decrypt mode */
+   /* dekrypter 8 byte om gangen, N=-32 for dekrypteringsmodus */
    for (i = 0; i + 8 <= (size_t)lSize; i += 8) {
       memcpy(aV, pBuffer + i, 8);
       tean(aV, aW, aKey, -32);
@@ -76,7 +76,7 @@ int tryDecrypt(unsigned int uiPrime) {
    }
 
    if (memcmp(pOut, "BENGT", 5) == 0) {
-      printf("Key found! Prime: %u\n", uiPrime);
+      printf("Nøkkel funnet! Primtall: %u\n", uiPrime);
 
       pPlain = fopen("task4_plain.txt", "wb");
       if (pPlain != NULL) {
@@ -107,7 +107,7 @@ void* threadFunction(void* arg) {
 
    while (1) {
 
-      /* stop if other thread already found the key */
+      /* stopp hvis den andre tråden allerede har funnet nøkkelen */
       pthread_mutex_lock(pArgs->pMutex);
       if (*(pArgs->pFound)) {
          pthread_mutex_unlock(pArgs->pMutex);
@@ -117,8 +117,8 @@ void* threadFunction(void* arg) {
 
       iNumbersRead = 0;
 
-      /* MUTEX LOCK: both threads share the file pointer.
-         without this they could read the same numbers twice */
+      /* MUTEX-LÅS: begge trådene deler filpekeren.
+         uten denne kunne de lest de samme tallene to ganger */
       pthread_mutex_lock(pArgs->pMutex);
       while (iNumbersRead < 10) {
          if (fscanf(pArgs->pfInputFile, "%u",
@@ -140,15 +140,15 @@ void* threadFunction(void* arg) {
             memset(pNewNode, 0, sizeof(struct PGPRIMENUMBER));
             pNewNode->uiPrime = auiNumbers[iIndex];
 
-            /* MUTEX LOCK: both threads share the prime list.
-               without this the list pointers could get corrupted */
+            /* MUTEX-LÅS: begge trådene deler primtallslisten.
+               uten denne kunne listepekerne blitt ødelagt */
             pthread_mutex_lock(pArgs->pMutex);
             pNewNode->pNext      = *(pArgs->pPrimeList);
             *(pArgs->pPrimeList) = pNewNode;
             pNewNode             = NULL;
             pthread_mutex_unlock(pArgs->pMutex);
 
-            /* try this prime as decryption key */
+            /* prøv dette primtallet som dekrypteringsnøkkel */
             if (tryDecrypt(auiNumbers[iIndex])) {
                pthread_mutex_lock(pArgs->pMutex);
                *(pArgs->pFound) = 1;
@@ -163,27 +163,27 @@ void* threadFunction(void* arg) {
 
 int main(int iArgc, char* apszArgv[]) {
    struct PGPRIMENUMBER* pPrimeList  = NULL;
-   FILE*                 pfInputFile = NULL;   /* pf = pointer to FILE */
-   pthread_t             tThread1;             /* t = thread type */
+   FILE*                 pfInputFile = NULL;   /* pf = peker til FILE */
+   pthread_t             tThread1;             /* t = trådtype */
    pthread_t             tThread2;
-   pthread_mutex_t       tMutex;               /* t = mutex type */
+   pthread_mutex_t       tMutex;               /* t = mutex-type */
    struct THREAD_ARGS    tArgs;
    struct PGPRIMENUMBER* pPtr   = NULL;
    int                   iFound = 0;
-   int                   iRc    = 0;           /* iRc = int return code */
+   int                   iRc    = 0;           /* iRc = returkode som int */
 
    if (iArgc != 2) {
-      printf("ERROR: Usage: ./task4 <filename>\n");
+      printf("FEIL: Bruk: ./task4 <filnavn>\n");
       return 1;
    }
 
    pfInputFile = fopen(apszArgv[1], "r");
    if (pfInputFile == NULL) {
-      printf("ERROR: Could not open file: %s\n", apszArgv[1]);
+      printf("FEIL: Kunne ikke åpne filen: %s\n", apszArgv[1]);
       return 1;
    }
 
-   /* explicit mutex init as required by the task */
+   /* eksplisitt initialisering av mutex, slik oppgaven krever */
    iRc = pthread_mutex_init(&tMutex, NULL);
    if (iRc != 0) {
       fclose(pfInputFile); pfInputFile = NULL;
@@ -217,14 +217,14 @@ int main(int iArgc, char* apszArgv[]) {
    pfInputFile = NULL;
    pthread_mutex_destroy(&tMutex);
 
-   printf("\r\nPrime numbers found:\r\n");
+   printf("\r\nPrimtall funnet:\r\n");
    pPtr = pPrimeList;
    while (pPtr != NULL) {
       printf("%u\r\n", pPtr->uiPrime);
       pPtr = pPtr->pNext;
    }
 
-   /* free list node by node */
+   /* frigjør listen node for node */
    while (pPrimeList != NULL) {
       pPtr       = pPrimeList;
       pPrimeList = pPrimeList->pNext;

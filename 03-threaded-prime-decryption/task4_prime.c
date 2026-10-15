@@ -1,4 +1,4 @@
-/* Provided starter file, not written by me. */
+/* Utlevert startfil, ikke skrevet av meg. */
 /* Do not change the implementation of the isPrime function*/
 #include <stdio.h>
 #include "task4_prime.h"

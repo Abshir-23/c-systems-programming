@@ -1,4 +1,4 @@
-/* Provided starter file, not written by me. */
+/* Utlevert startfil, ikke skrevet av meg. */
 #ifndef EWP_TCP_PROTOCOL_DEFINED
 #define EWP_TCP_PROTOCOL_DEFINED
 

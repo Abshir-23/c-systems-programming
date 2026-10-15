@@ -1,4 +1,4 @@
-/* Provided starter file, not written by me. */
+/* Utlevert startfil, ikke skrevet av meg. */
 #include <stddef.h>
 /* Code based off definitions in RFC 791 (IPv4) and RFC 793 (TCP), which are in the public domain */
 unsigned int tcp_checksum(const unsigned char * data, size_t length) { 

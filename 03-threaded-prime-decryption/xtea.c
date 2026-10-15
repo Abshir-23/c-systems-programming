@@ -1,4 +1,4 @@
-/* Provided starter file, not written by me. */
+/* Utlevert startfil, ikke skrevet av meg. */
 /* Original code credited to David Wheeler and Roger Needham, here refernced as XTEA or TEAN */
 /* N should be set to 32 cycles, and k should be an array of 4 int (for this task the 4 integers are the same) */
 /* The same function is used for both encrypt and decrypt */

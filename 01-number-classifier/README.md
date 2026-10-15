@@ -1,23 +1,23 @@
-# 01 Number classifier
+# 01 Tallklassifisering
 
-Reads integers from a text file, runs each one through eight classification functions and writes the results to a binary file.
+Leser heltall fra en tekstfil, kjører hvert tall gjennom åtte klassifiseringsfunksjoner og skriver resultatene til en binærfil.
 
-For every number the program checks if it is a Fibonacci number, prime, perfect square, perfect cube, perfect number, abundant, deficient and odd. The results are stored in a struct and written to `output.bin`, while a table is printed to the terminal.
+For hvert tall sjekker programmet om det er et Fibonacci-tall, et primtall, et kvadrattall, et kubikktall, et perfekt tall, et overflodstall, et mangeltall og et oddetall. Resultatene lagres i en struct og skrives til `output.bin`, mens en tabell skrives ut i terminalen.
 
-## Usage
+## Bruk
 
 ```bash
 make
 ./task2 test_numbers.txt
 ```
 
-## What I practised
+## Hva jeg øvde på
 
-* Linking several `.c` files with a makefile and a shared header
-* Reading text input and writing a fixed size binary record per number
-* Cleaning up every allocation and file handle on all exit paths
+* Å lenke flere `.c`-filer med en makefile og en felles headerfil
+* Å lese tekst og skrive en binær post med fast størrelse per tall
+* Å rydde opp hver minneallokering og hvert filhåndtak på alle veier ut av programmet
 
-## Screenshots
+## Skjermbilder
 
-![Output](docs/task2_scrn1.png)
+![Utskrift](docs/task2_scrn1.png)
 ![Valgrind](docs/task2_valgrind.png)

@@ -1,28 +1,28 @@
-# 03 Threaded prime decryption
+# 03 Trådbasert primtallsdekryptering
 
-Two POSIX threads work together to find prime numbers in a file and use them as keys to decrypt an XTEA encrypted message. When the right key is found, the plaintext is saved together with a checksum of it.
+To POSIX-tråder jobber sammen for å finne primtall i en fil og bruke dem som nøkler for å dekryptere en XTEA-kryptert melding. Når riktig nøkkel er funnet, lagres klarteksten sammen med en sjekksum av den.
 
-## How it works
+## Slik fungerer det
 
-1. Both threads read from the same input file and share a linked list of primes found so far
-2. Each prime is tried as an XTEA key on `task4_code.bin`
-3. When the decrypted text starts with the expected header, it is saved with a TCP style checksum, and the other thread is told to stop
-4. All shared state (file pointer, prime list, found flag) is protected by a mutex, and passed to the threads in a struct instead of globals
+1. Begge trådene leser fra den samme inndatafilen og deler en lenket liste med primtallene som er funnet så langt
+2. Hvert primtall prøves som XTEA-nøkkel på `task4_code.bin`
+3. Når den dekrypterte teksten starter med forventet header, lagres den med en sjekksum i TCP-stil, og den andre tråden får beskjed om å stoppe
+4. All delt tilstand (filpeker, primtallsliste, funnet-flagg) er beskyttet av en mutex, og sendes til trådene i en struct i stedet for som globale variabler
 
-## Usage
+## Bruk
 
 ```bash
 make
 ./task4 task4_primes.txt
 ```
 
-## What I practised
+## Hva jeg øvde på
 
 * `pthread_create`, `pthread_join`, `pthread_mutex_init` / `lock` / `unlock`
-* Avoiding race conditions on a shared `FILE *` and a shared list
-* Symmetric decryption with XTEA, 8 bytes at a time
+* Å unngå kappløpssituasjoner (race conditions) på en delt `FILE *` og en delt liste
+* Symmetrisk dekryptering med XTEA, 8 byte om gangen
 
-## Screenshots
+## Skjermbilder
 
-![Output](docs/task4_scrn2.png)
+![Utskrift](docs/task4_scrn2.png)
 ![Valgrind](docs/task4_valgrind.png)

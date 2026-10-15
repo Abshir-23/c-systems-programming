@@ -1,4 +1,4 @@
-/* Provided starter file, not written by me. */
+/* Utlevert startfil, ikke skrevet av meg. */
 #include <stdbool.h>
 bool isFibonacci(int n) {
    int a = 0, b = 1, c = a + b;

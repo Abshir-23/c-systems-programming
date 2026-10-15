@@ -1,4 +1,4 @@
-/* Provided starter file, not written by me. */
+/* Utlevert startfil, ikke skrevet av meg. */
 #include <stdbool.h>
 #include <math.h>
 bool isSquareNumber(int n) {

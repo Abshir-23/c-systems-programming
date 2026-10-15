@@ -1,9 +1,9 @@
 /* 
-   Utility functions: reliable recv and packet sorting */
+   Hjelpefunksjoner: pålitelig recv og sortering av pakker */
 #include <string.h>
 #include <sys/socket.h>
 #include "include/task6.h"
-/* keep reading until we have exactly iLen bytes */
+/* fortsett å lese til vi har nøyaktig iLen byte */
 int recvAll(int iSock, unsigned char *pucBuf, int iLen)
 {
     int iGot = 0;
@@ -17,7 +17,7 @@ int recvAll(int iSock, unsigned char *pucBuf, int iLen)
     }
     return iGot;
 }
-/* sort packets by sequence number, simple bubble sort */
+/* sorter pakkene etter sekvensnummer, enkel boblesortering */
 void sortPackets(PACKETSLOT *paSlots, int iCount)
 {
     PACKETSLOT stTmp;   /* st = struct */

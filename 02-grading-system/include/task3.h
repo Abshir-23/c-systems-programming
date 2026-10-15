@@ -1,14 +1,14 @@
 #ifndef TASK3_H
 #define TASK3_H
 
-/* Max points allowed per task, defined in task3.c */
+/* Maks poeng per oppgave, definert i task3.c */
 #define NUM_TASKS  6
 #define MAX_ID     16
 #define MAX_JUST   256
 
 extern int aiTaskMax[NUM_TASKS];
 
-/* A student in the grading list */
+/* En student i karakterlisten */
 typedef struct node {
     char          szId[MAX_ID];           
     int           aiPoints[NUM_TASKS];    
@@ -19,7 +19,7 @@ typedef struct node {
     struct node  *pNext;
 } NODE;
 
-/* Main menu options */
+/* Valg i hovedmenyen */
 enum MENU {
     MENU_ADD      = 1,
     MENU_LOAD     = 2,
@@ -35,15 +35,15 @@ enum MENU {
     MENU_EXIT     = 0
 };
 
-/* Linked list operations */
+/* Operasjoner på lenket liste */
 NODE       *create_node(const char *szId);
 NODE       *add_node(NODE **ppHead, const char *szId);
 NODE       *find_node(NODE *pHead, const char *szId);
 void        free_list(NODE **ppHead);
-void        recalc(NODE *pN);        /* Recalculate total score */
+void        recalc(NODE *pN);        /* Regn ut total poengsum på nytt */
 void        delete_node(NODE **ppHead, const char *szId);
 
-/* Menu actions */
+/* Menyhandlinger */
 void        fn_add(NODE **ppHead);
 void        fn_load_text(NODE **ppHead);
 void        fn_assess(NODE *pHead);
@@ -56,8 +56,8 @@ void        fn_stats(NODE *pHead);
 void        fn_save_binary(NODE *pHead);
 void        fn_load_binary(NODE **ppHead);
 
-/* Helpers */
-const char *get_grade(int iScore);   /* Convert score to letter grade */
+/* Hjelpefunksjoner */
+const char *get_grade(int iScore);   /* Gjør om poengsum til bokstavkarakter */
 int         read_line(char *szBuf, int iSize);
 void        pause_menu(void);
 

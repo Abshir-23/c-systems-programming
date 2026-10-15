@@ -1,5 +1,5 @@
 /* 
-   All menu functions for adding, grading, printing and managing candidates.
+   Alle menyfunksjonene for å legge til, vurdere, skrive ut og administrere kandidater.
 */
 
 #include <stdio.h>
@@ -7,16 +7,16 @@
 #include <string.h>
 #include "task3.h"
 
-/* Option 1 - Add a single candidate manually */
+/* Valg 1 - Legg til én kandidat manuelt */
 void fn_add(NODE **ppHead)
 {
     char szId[MAX_ID];
 
-    printf("Candidate ID: ");
+    printf("Kandidat-ID: ");
     if (!read_line(szId, sizeof(szId))) return;
 
     if (find_node(*ppHead, szId)) {
-        printf("Already exists\n");
+        printf("Finnes allerede\n");
         pause_menu();
         return;
     }
@@ -26,7 +26,7 @@ void fn_add(NODE **ppHead)
     pause_menu();
 }
 
-/* Option 2 - Load candidates from a text file, one ID per line */
+/* Valg 2 - Last inn kandidater fra en tekstfil, én ID per linje */
 void fn_load_text(NODE **ppHead)
 {
     FILE *pFile  = NULL;
@@ -39,12 +39,12 @@ void fn_load_text(NODE **ppHead)
 
     pFile = fopen(szFile, "r");
     if (pFile == NULL) {
-        printf("ERROR: Cannot open file: %s\n", szFile);
+        printf("FEIL: Kan ikke åpne filen: %s\n", szFile);
         return;
     }
 
     while (fgets(szLine, sizeof(szLine), pFile)) {
-        /* strip trailing whitespace and newlines */
+        /* fjern mellomrom og linjeskift på slutten */
         pEnd = szLine + strlen(szLine) - 1;
         while (pEnd >= szLine &&
                (*pEnd == '\n' || *pEnd == '\r' || *pEnd == ' '))
@@ -58,11 +58,11 @@ void fn_load_text(NODE **ppHead)
 
     fclose(pFile);
     pFile = NULL;
-    printf("Done loading candidates\n");
+    printf("Ferdig med å laste inn kandidater\n");
     pause_menu();
 }
 
-/* Option 3 - Grade one specific task for one candidate */
+/* Valg 3 - Vurder én bestemt oppgave for én kandidat */
 void fn_assess(NODE *pHead)
 {
     NODE *pN    = NULL;
@@ -72,12 +72,12 @@ void fn_assess(NODE *pHead)
     int   iTask = 0;
     int   iPts  = 0;
 
-    printf("Candidate ID: ");
+    printf("Kandidat-ID: ");
     if (!read_line(szId, sizeof(szId))) return;
 
     pN = find_node(pHead, szId);
     if (pN == NULL) {
-        printf("Candidate not found\n");
+        printf("Fant ikke kandidaten\n");
         return;
     }
 
@@ -85,7 +85,7 @@ void fn_assess(NODE *pHead)
     if (!read_line(szBuf, sizeof(szBuf))) return;
     iTask = atoi(szBuf);
     if (iTask < 1 || iTask > NUM_TASKS) {
-        printf("Invalid task number\n");
+        printf("Ugyldig oppgavenummer\n");
         return;
     }
 
@@ -93,7 +93,7 @@ void fn_assess(NODE *pHead)
     if (!read_line(szBuf, sizeof(szBuf))) return;
     iPts = atoi(szBuf);
     if (iPts < 0 || iPts > aiTaskMax[iTask - 1]) {
-        printf("Invalid points\n");
+        printf("Ugyldig poengsum\n");
         return;
     }
 
@@ -105,12 +105,12 @@ void fn_assess(NODE *pHead)
     strncpy(pN->aszJust[iTask - 1], szJust, MAX_JUST - 1);
     recalc(pN);
 
-    printf("Saved. Total: %d (%s)\n",
+    printf("Lagret. Totalt: %d (%s)\n",
            pN->iTotalScore, get_grade(pN->iTotalScore));
     pause_menu();
 }
 
-/* Option 4 - Print all candidates with their score and grade */
+/* Valg 4 - Skriv ut alle kandidater med poengsum og karakter */
 void fn_print_all(NODE *pHead)
 {
     NODE *pCursor = pHead;
@@ -128,7 +128,7 @@ void fn_print_all(NODE *pHead)
     pause_menu();
 }
 
-/* Option 5 - Print only candidates with a specific grade */
+/* Valg 5 - Skriv bare ut kandidater med en bestemt karakter */
 void fn_by_grade(NODE *pHead)
 {
     NODE *pCursor = pHead;
@@ -137,7 +137,7 @@ void fn_by_grade(NODE *pHead)
     printf("Grade (A-F): ");
     if (!read_line(szGrade, sizeof(szGrade))) return;
 
-    /* convert to uppercase if the user typed lowercase */
+    /* gjør om til stor bokstav hvis brukeren skrev liten */
     if (szGrade[0] >= 'a' && szGrade[0] <= 'z')
         szGrade[0] = (char)(szGrade[0] - 32);
 
@@ -149,7 +149,7 @@ void fn_by_grade(NODE *pHead)
     pause_menu();
 }
 
-/* Option 6 - Print candidates that still have ungraded tasks */
+/* Valg 6 - Skriv ut kandidater som fortsatt har oppgaver som ikke er vurdert */
 void fn_ungraded(NODE *pHead)
 {
     NODE *pCursor = pHead;
@@ -166,58 +166,58 @@ void fn_ungraded(NODE *pHead)
     pause_menu();
 }
 
-/* Option 7 - Print full details and justifications for one candidate */
+/* Valg 7 - Skriv ut alle detaljer og begrunnelser for én kandidat */
 void fn_details(NODE *pHead)
 {
     NODE *pN   = NULL;
     char  szId[MAX_ID];
     int   iIdx = 0;
 
-    printf("Candidate ID: ");
+    printf("Kandidat-ID: ");
     if (!read_line(szId, sizeof(szId))) return;
 
     pN = find_node(pHead, szId);
     if (pN == NULL) {
-        printf("Candidate not found\n");
+        printf("Fant ikke kandidaten\n");
         return;
     }
 
-    printf("\n%s  score: %d  grade: %s\n",
+    printf("\n%s  poeng: %d  karakter: %s\n",
            pN->szId, pN->iTotalScore, get_grade(pN->iTotalScore));
 
     for (iIdx = 0; iIdx < NUM_TASKS; iIdx++) {
-        printf("  Task %d: %d/%d  %s\n",
+        printf("  Oppgave %d: %d/%d  %s\n",
                iIdx + 1,
                pN->aiPoints[iIdx],
                aiTaskMax[iIdx],
-               pN->aiGraded[iIdx] ? pN->aszJust[iIdx] : "(not graded)");
+               pN->aiGraded[iIdx] ? pN->aszJust[iIdx] : "(ikke vurdert)");
     }
     pause_menu();
 }
 
-/* Option 8 - Delete a candidate from the list */
+/* Valg 8 - Slett en kandidat fra listen */
 void fn_delete(NODE **ppHead)
 {
     char szId[MAX_ID];
 
-    printf("Candidate ID to delete: ");
+    printf("Kandidat-ID som skal slettes: ");
     if (!read_line(szId, sizeof(szId))) return;
 
     delete_node(ppHead, szId);
     pause_menu();
 }
 
-/* Option 9 - Show statistics: count, average, highest and lowest score */
+/* Valg 9 - Vis statistikk: antall, snitt, høyeste og laveste poengsum */
 void fn_stats(NODE *pHead)
 {
     NODE *pCursor  = pHead;
     int   iCount   = 0;
     int   iTotal   = 0;
     int   iHighest = 0;
-    int   iLowest  = 100;  /* max possible score = sum of aiTaskMax (5+15+20+20+20+20) */
+    int   iLowest  = 100;  /* høyest mulige poengsum = summen av aiTaskMax (5+15+20+20+20+20) */
 
     if (pHead == NULL) {
-        printf("No candidates in list\n");
+        printf("Ingen kandidater i listen\n");
         pause_menu();
         return;
     }
@@ -232,31 +232,31 @@ void fn_stats(NODE *pHead)
         pCursor = pCursor->pNext;
     }
 
-    printf("\n--- Statistics ---\n");
+    printf("\n--- Statistikk ---\n");
     printf("Candidates : %d\n",   iCount);
-    printf("Average    : %.1f\n", (double)iTotal / iCount);
-    printf("Highest    : %d (%s)\n", iHighest, get_grade(iHighest));
-    printf("Lowest     : %d (%s)\n", iLowest,  get_grade(iLowest));
+    printf("Snitt      : %.1f\n", (double)iTotal / iCount);
+    printf("Høyeste    : %d (%s)\n", iHighest, get_grade(iHighest));
+    printf("Laveste    : %d (%s)\n", iLowest,  get_grade(iLowest));
     pause_menu();
 }
 
-/* Option 10 - Save all candidates to a binary file */
+/* Valg 10 - Lagre alle kandidater i en binærfil */
 void fn_save_binary(NODE *pHead)
 {
     FILE *pFile   = NULL;
     NODE *pCursor = pHead;
     char  szFile[128];
 
-    printf("Output filename: ");
+    printf("Navn på utdatafil: ");
     if (!read_line(szFile, sizeof(szFile))) return;
 
     pFile = fopen(szFile, "wb");
     if (pFile == NULL) {
-        printf("ERROR: Cannot open file: %s\n", szFile);
+        printf("FEIL: Kan ikke åpne filen: %s\n", szFile);
         return;
     }
 
-    /* write each node's data to the file, skip the pointer fields */
+    /* skriv dataene i hver node til filen, og hopp over pekerfeltene */
     while (pCursor != NULL) {
         fwrite(pCursor->szId,         sizeof(pCursor->szId),     1, pFile);
         fwrite(pCursor->aiPoints,     sizeof(pCursor->aiPoints), 1, pFile);
@@ -268,11 +268,11 @@ void fn_save_binary(NODE *pHead)
 
     fclose(pFile);
     pFile = NULL;
-    printf("Saved to %s\n", szFile);
+    printf("Lagret i %s\n", szFile);
     pause_menu();
 }
 
-/* Option 11 - Load candidates from a binary file into the list */
+/* Valg 11 - Last inn kandidater fra en binærfil til listen */
 void fn_load_binary(NODE **ppHead)
 {
     FILE *pFile  = NULL;
@@ -281,18 +281,18 @@ void fn_load_binary(NODE **ppHead)
     char  szFile[128];
     int   iRead  = 0;
 
-    printf("Input filename: ");
+    printf("Navn på inndatafil: ");
     if (!read_line(szFile, sizeof(szFile))) return;
 
     pFile = fopen(szFile, "rb");
     if (pFile == NULL) {
-        printf("ERROR: Cannot open file: %s\n", szFile);
+        printf("FEIL: Kan ikke åpne filen: %s\n", szFile);
         return;
     }
 
     memset(&sTmp, 0, sizeof(NODE));
 
-    /* read one candidate at a time until we reach end of file */
+    /* les én kandidat om gangen til vi når slutten av filen */
     while (1) {
         iRead = (int)fread(sTmp.szId, sizeof(sTmp.szId), 1, pFile);
         if (iRead != 1) break;
@@ -315,6 +315,6 @@ void fn_load_binary(NODE **ppHead)
 
     fclose(pFile);
     pFile = NULL;
-    printf("Done loading from binary\n");
+    printf("Ferdig med å laste inn fra binærfil\n");
     pause_menu();
 }

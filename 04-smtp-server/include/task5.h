@@ -1,5 +1,5 @@
 /* 
-   Forward declarations for all task5 functions */
+   Forhåndsdeklarasjoner for alle funksjonene i task5 */
 
 #ifndef TASK5_H
 #define TASK5_H

@@ -1,35 +1,35 @@
-# 04 SMTP server
+# 04 SMTP-server
 
-A small SMTP style mail server over TCP. It listens on localhost, walks a client through the SMTP conversation and saves the received message as an `.eml` file.
+En liten e-postserver i SMTP-stil over TCP. Den lytter på localhost, leder en klient gjennom SMTP-samtalen og lagrer den mottatte meldingen som en `.eml`-fil.
 
-Messages are wrapped in a simple binary protocol (EWP): a header with a magic number and the payload size, followed by a fixed size struct for each command or reply. The protocol definitions are in `include/ewpdef.h`.
+Meldingene pakkes inn i en enkel binærprotokoll (EWP): en header med et magisk tall og størrelsen på innholdet, etterfulgt av en struct med fast størrelse for hver kommando eller hvert svar. Protokolldefinisjonene ligger i `include/ewpdef.h`.
 
-## Session flow
+## Sesjonsflyt
 
 ```
-S: 220 <ip> SMTP <server id> <timestamp>
-C: HELO <domain>          S: 250 Hello
-C: MAIL FROM:<sender>     S: 250 Sender ok
-C: RCPT TO:<recipient>    S: 250 Recipient ok
-C: DATA <filename>        S: 354 Ready for message
-C: <message body>         S: 250 Message accepted
+S: 220 <ip> SMTP <server-id> <tidsstempel>
+C: HELO <domene>          S: 250 Hello
+C: MAIL FROM:<avsender>   S: 250 Sender ok
+C: RCPT TO:<mottaker>     S: 250 Recipient ok
+C: DATA <filnavn>         S: 354 Ready for message
+C: <meldingstekst>        S: 250 Message accepted
 C: QUIT                   S: 221 Goodbye
 ```
 
-## Usage
+## Bruk
 
 ```bash
 make
 ./task5 -port 3000 -id SmtpTest
 ```
 
-## What I practised
+## Hva jeg øvde på
 
 * `socket`, `bind`, `listen`, `accept`, `send`, `recv`
-* Parsing a fixed binary header and validating sizes before reading the payload
-* Server side protocol state handling and safe file names for saved messages
+* Å tolke en fast binær header og validere størrelser før innholdet leses
+* Tilstandshåndtering av protokollen på serversiden og trygge filnavn for lagrede meldinger
 
-## Screenshots
+## Skjermbilder
 
-![Session](docs/task5_scrnshot.png)
+![Sesjon](docs/task5_scrnshot.png)
 ![Valgrind](docs/task5_valgrind.png)

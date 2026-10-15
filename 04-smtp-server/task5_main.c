@@ -1,5 +1,5 @@
 /* 
-   Entry point. Parses args, sets up TCP socket, accepts one client.
+   Startpunkt. Tolker argumentene, setter opp TCP-socket og tar imot én klient.
     */
 
 #include <stdio.h>
@@ -11,8 +11,8 @@
 #include <arpa/inet.h>
 #include "include/task5.h"
 
-/* reads -port and -id from argv.
-   returns 1 if both found, 0 if missing */
+/* leser -port og -id fra argv.
+   returnerer 1 hvis begge finnes, 0 hvis de mangler */
 int parseArgs(int iArgc, char *apszArgv[],
               int *piPort, char *pszId, int iIdMax)
 {
@@ -44,11 +44,11 @@ int main(int iArgc, char *apszArgv[])
     char               szClientIp[INET_ADDRSTRLEN];
 
     if (!parseArgs(iArgc, apszArgv, &iPort, szId, sizeof(szId))) {
-        printf("Usage: ./task5 -port <port> -id <id>\n");
+        printf("Bruk: ./task5 -port <port> -id <id>\n");
         return 1;
     }
 
-    printf("\n*** SMTP Server ***\n");
+    printf("\n*** SMTP-server ***\n");
     printf("- ID   : %s\n", szId);
     printf("- Port : %d\n\n", iPort);
 
@@ -58,7 +58,7 @@ int main(int iArgc, char *apszArgv[])
         return 1;
     }
 
-    /* allows restarting server immediately without waiting for OS timeout */
+    /* gjør at serveren kan startes på nytt med en gang uten å vente på tidsavbrudd i OS */
     setsockopt(iServerSock, SOL_SOCKET, SO_REUSEADDR, &iOpt, sizeof(iOpt));
 
     memset(&stServer, 0, sizeof(stServer));
@@ -78,9 +78,9 @@ int main(int iArgc, char *apszArgv[])
         return 1;
     }
 
-    printf("- Listening on 127.0.0.1:%d ...\n\n", iPort);
+    printf("- Lytter på 127.0.0.1:%d ...\n\n", iPort);
 
-    /* block here until a client connects */
+    /* vent her til en klient kobler til */
     iClientSock = accept(iServerSock,
                          (struct sockaddr *)&stClient,
                          &iClientLen);
@@ -91,13 +91,13 @@ int main(int iArgc, char *apszArgv[])
     }
 
     inet_ntop(AF_INET, &stClient.sin_addr, szClientIp, INET_ADDRSTRLEN);
-    printf("- Client connected: %s\n\n", szClientIp);
+    printf("- Klient tilkoblet: %s\n\n", szClientIp);
 
     handleClient(iClientSock, szClientIp, szId);
 
     close(iClientSock);
     close(iServerSock);
 
-    puts("\n*** Done. Bye! ***\n");
+    puts("\n*** Ferdig. Ha det! ***\n");
     return 0;
 }

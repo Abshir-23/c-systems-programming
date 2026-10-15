@@ -1,7 +1,7 @@
 /* 
 
-   This program reads numbers from a text file, runs each number
-   through 8 math functions, and saves the results to a binary file.
+   Dette programmet leser tall fra en tekstfil, kjører hvert tall
+   gjennom 8 mattefunksjoner og lagrer resultatene i en binærfil.
 */
 
 #include <stdio.h>
@@ -17,54 +17,54 @@ int main(int iArgc, char* apszArgv[]) {
     int iIndex  = 0;
     struct TASK2_NUMBERS_METADATA* pEntry = NULL;
 
-    /* check args */
+    /* sjekk argumentene */
     if (iArgc != 2) {
-        printf("ERROR: Wrong parameters - Use following input on start:\n");
-        printf("        $ ./task2 <filename>\n");
-        printf("Try again. Closing program...\n");
+        printf("FEIL: Feil parametere - Bruk følgende ved oppstart:\n");
+        printf("        $ ./task2 <filnavn>\n");
+        printf("Prøv igjen. Avslutter programmet...\n");
         return 1;
     }
 
-    puts("\n*** Number Classifier ***\n");
+    puts("\n*** Tallklassifisering ***\n");
 
-    /* open input file */
+    /* åpne inndatafilen */
     pfInput = fopen(apszArgv[1], "r");
     if (pfInput == NULL) {
-        printf("- ERROR: Could not open input file: %s\n", apszArgv[1]);
+        printf("- FEIL: Kunne ikke åpne inndatafilen: %s\n", apszArgv[1]);
         return 1;
     }
-    printf("- Opened input file: \"%s\"\n", apszArgv[1]);
+    printf("- Åpnet inndatafilen: \"%s\"\n", apszArgv[1]);
 
-    /* open output file for binary writing */
+    /* åpne utdatafilen for binær skriving */
     pfOutput = fopen("output.bin", "wb");
     if (pfOutput == NULL) {
-        printf("- ERROR: Could not open output file\n");
+        printf("- FEIL: Kunne ikke åpne utdatafilen\n");
         fclose(pfInput);
         pfInput = NULL;
         return 1;
     }
-    printf("- Opened output file: \"output.bin\"\n\n");
+    printf("- Åpnet utdatafilen: \"output.bin\"\n\n");
 
-    /* print table header */
+    /* skriv ut tabelloverskriften */
     printf("%-5s %-8s %-5s %-5s %-5s %-5s %-5s %-5s %-5s %-5s\n",
            "Index", "Number", "Fib", "Prim", "Kvad",
            "Cube", "Perf", "Abun", "Def", "Odd");
     printf("----------------------------------------------------------\n");
 
-    /* read file */
+    /* les filen */
     while (fscanf(pfInput, "%d", &iNumber) == 1) {
 
         pEntry = (struct TASK2_NUMBERS_METADATA*)malloc(
                   sizeof(struct TASK2_NUMBERS_METADATA));
         if (pEntry == NULL) {
-            printf("- ERROR: malloc failed\n");
+            printf("- FEIL: malloc feilet\n");
             fclose(pfInput);  pfInput  = NULL;
             fclose(pfOutput); pfOutput = NULL;
             return 1;
         }
         memset(pEntry, 0, sizeof(struct TASK2_NUMBERS_METADATA));
 
-        /* fill struct with results from each function */
+        /* fyll structen med resultatene fra hver funksjon */
         pEntry->iIndex             = iIndex;
         pEntry->iNumber            = iNumber;
         pEntry->bIsFibonacci       = isFibonacci(iNumber)       ? 1 : 0;
@@ -83,7 +83,7 @@ int main(int iArgc, char* apszArgv[]) {
                pEntry->bIsPerfectNumber,   pEntry->bIsAbundantNumber,
                pEntry->bIsDeficientNumber, pEntry->bIsOddNumber);
 
-        /* write struct as binary to output file */
+        /* skriv structen binært til utdatafilen */
         fwrite(pEntry, sizeof(struct TASK2_NUMBERS_METADATA), 1, pfOutput);
 
         free(pEntry);
@@ -91,12 +91,12 @@ int main(int iArgc, char* apszArgv[]) {
         iIndex++;
     }
 
-    printf("\n- Processed %d numbers.\n", iIndex);
+    printf("\n- Behandlet %d tall.\n", iIndex);
 
-    /* clean up */
+    /* rydd opp */
     fclose(pfInput);  pfInput  = NULL;
     fclose(pfOutput); pfOutput = NULL;
 
-    puts("*** Program finished. Bye! ***\n");
+    puts("*** Programmet er ferdig. Ha det! ***\n");
     return 0;
 }

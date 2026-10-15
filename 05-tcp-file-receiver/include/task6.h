@@ -3,7 +3,7 @@
 
 #include "ewpdef.h"
 
-/* flag values from the protocol header */
+/* flaggverdier fra protokollheaderen */
 #define FLAG_FIN  0x01
 #define FLAG_ACK  0x10
 #define FLAG_NACK 0x20
@@ -11,10 +11,10 @@
 #define MAX_PACKETS 2048
 #define OUTFILE     "task6_received.bmp"
 
-/* fixed part of the struct (Data[1] is just a placeholder) */
+/* den faste delen av structen (Data[1] er bare en plassholder) */
 #define HDR_SIZE ((int)(sizeof(struct EWP_TCP_PROTOCOL_TCP) - 1))
 
-/* holds one received packet so we can sort later */
+/* holder én mottatt pakke slik at vi kan sortere senere */
 typedef struct {
     unsigned int   uiSeq;
     unsigned short usLen;
